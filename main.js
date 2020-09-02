@@ -155,7 +155,7 @@ views.Paint = extend( views.Base, function( stage, w, h, timer, sensitivity ) {
   this.resetIdleTimer();
   this.sensitivity = sensitivity;
 
-  this.mouseTrap = new PIXI.DisplayObject();
+  this.mouseTrap = new PIXI.Sprite();
   stage.addChild( this.mouseTrap );
 
   this.mouseTrap.hitArea = new PIXI.Rectangle( 0, 0, w, h );
