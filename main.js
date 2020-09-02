@@ -18,19 +18,6 @@ var extend = function( base, sub, instanceProps, classProps ) {
   return constructor;
 };
 
-function getUrlParameter(sParam) {
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++)
-    {
-        var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam)
-        {
-            return sParameterName[1];
-        }
-    }
-}
-
 Math.clamp = function( value, min, max ) {
   if ( min === undefined ) min = 0.0;
   if ( max === undefined ) max = 1.0;
@@ -395,21 +382,10 @@ var init = function( $container ) {
 
   var timer = new Timer( new Date().getTime() );
 
-  var sensitivity = getUrlParameter( "sensitivity" ) || 1.0;
+  var sensitivity = 1.0;
   var view = new views.Paint( stage, w, h, timer, sensitivity );
 
   requestAnimFrame( animate );
-
-  if ( getUrlParameter( "kiosk" ) ) {
-    var regex = /^https?:/;
-    $("a").each( function() {
-      $a = $( this );
-      var href = $a.attr("href");
-      if ( regex.test( href ) ) {
-        $a.contents().unwrap();
-      }
-    });
-  }
 
   return {
     stage: stage,
@@ -431,16 +407,4 @@ var init = function( $container ) {
 
 $(function(){
   window.app = init( $("#render-container") );
-
-  var refreshAfterSeconds = getUrlParameter( "refreshAfterSeconds" );
-  if ( refreshAfterSeconds ) {
-    console.log( "Refreshing after " + refreshAfterSeconds + " seconds" );
-    setInterval( function() {
-      if ( app.getIdleSeconds() > refreshAfterSeconds ) {
-        window.location.reload();
-      }
-    }, 1000 );
-  } else {
-    console.log( "No refresh time set, not refreshing. Use URL param refreshAfterSeconds to refresh after a period of inactivity." );
-  }
 });
