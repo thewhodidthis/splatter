@@ -372,39 +372,31 @@ views.Paint = extend( views.Base, function( stage, w, h, timer, sensitivity ) {
 ///////////////////////////////////////////////////////////////////////////////
 // Application initialization
 ///////////////////////////////////////////////////////////////////////////////
-var init = function( $container ) {
-  var w = $container.width(), h = $container.height();
+function start() {
+  const canvas = document.querySelector('canvas')
+  const { width: w, height: h } = canvas
 
-  var stage = new PIXI.Stage( 0xF5F5F5, true /* interactive */ );
-  var renderer = PIXI.autoDetectRenderer( w, h, {
-    view: $container[0], antialias: true
-  } );
+  const stage = new PIXI.Stage(0xF5F5F5, true)
+  const renderer = PIXI.autoDetectRenderer(w, h, {
+    view: canvas,
+    antialias: true
+  })
 
-  var timer = new Timer( new Date().getTime() );
+  const now = new Date().getTime()
+  const timer = new Timer(now)
 
-  var sensitivity = 1.0;
-  var view = new views.Paint( stage, w, h, timer, sensitivity );
+  const sensitivity = 1.0
+  const view = new views.Paint(stage, w, h, timer, sensitivity)
 
-  requestAnimFrame( animate );
-
-  return {
-    stage: stage,
-    renderer: renderer,
-    view: view,
-    clear: view.clear.bind( view ),
-    getIdleSeconds: view.getIdleSeconds.bind( view )
-  };
-
+  window.requestAnimationFrame(animate)
 
   function animate() {
-    requestAnimFrame( animate );
+    window.requestAnimationFrame(animate)
 
-    view.update( timer.getElapsedSeconds() );
-    renderer.render( stage );
-    view.afterRender();
+    view.update(timer.getElapsedSeconds())
+    renderer.render(stage)
+    view.afterRender()
   }
-};
+}
 
-$(function(){
-  window.app = init( $("#render-container") );
-});
+document.addEventListener('DOMContentLoaded', start)
