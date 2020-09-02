@@ -1,49 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
-// Utility methods
-////////////////////////////////////////////////////////////////////////////////
-
-var TAU = 6.28318530717958647692;
-
-var extend = function( base, sub, instanceProps, classProps ) {
-  var constructor = function() {
-    base.apply( this, arguments );
-    sub.apply( this, arguments );
-  };
-
-  constructor.prototype = Object.create( base.prototype );
-  constructor.prototype.constructor = sub;
-  if ( !_.isUndefined( instanceProps ) ) _.extend( constructor.prototype, instanceProps );
-  if ( !_.isUndefined( classProps ) ) _.extend( constructor, classProps );
-
-  return constructor;
-};
-
-Math.clamp = function( value, min, max ) {
-  if ( min === undefined ) min = 0.0;
-  if ( max === undefined ) max = 1.0;
-
-  return Math.min( value, Math.max( value, min ), max );
-}
-
-function hexToRGB( hexInt ) {
-  var r = (hexInt >> 16) & 255;
-  var g = (hexInt >> 8) & 255;
-  var b = hexInt & 255;
-
-  return [ r / 255.0, g / 255.0, b / 255 ];
-}
-
-Math.mix = function( x, y, a ) {
-  return x * (1.0 - a) + y * a;
-}
-
-// from http://en.wikipedia.org/wiki/B%C3%A9zier_curve
-// B(t) = (1 - t)^2 * P0 + 2(1 - t)t * P1 + t^2 * P2, where t is between 0,1
-function quadraticCurve( start, end, control, t ) {
-  var x = (1.0 - t) * (1.0 - t) * start[0] + 2 * (1.0 - t) * t * control[0] + t * t * end[0];
-  var y = (1.0 - t) * (1.0 - t) * start[1] + 2 * (1.0 - t) * t * control[1] + t * t * end[1];
-  return vec2.fromValues( x, y );
-}
+import { TAU, extend, quadraticCurve, hexToRGB, clamp, mix } from './util.js'
 
 var BrushPoint = function( x, y, time ) {
   this.v = vec2.fromValues( x, y );
@@ -247,10 +202,10 @@ views.Paint = extend( views.Base, function( stage, w, h, timer, sensitivity ) {
     // lots of drops when the velocity is high...
     var nDrops = Math.floor( Math.random() * Math.max( 0.0, velocity - 20.0 ) * 5.0 );
     // too many drops can easily stall the app
-    nDrops = Math.clamp( nDrops, 0, 1000 );
+    nDrops = clamp( nDrops, 0, 1000 );
 
     for ( var i = 0; i < nDrops; ++i ) {
-      var scatterDistance = Math.mix( Math.random(),
+      var scatterDistance = mix( Math.random(),
                                       Math.pow( Math.random(), 4 ) * velocity * 0.05,
                                       Math.min( 1.0, velocity / 20.0 ) );
       var scatterSpread = (Math.random() - 0.5) * TAU / 3.0;
@@ -270,7 +225,7 @@ views.Paint = extend( views.Base, function( stage, w, h, timer, sensitivity ) {
 
     // Draw drippy drops -------------------------------------------------------
     nDrops = 2.0 - velocity / 5.0;
-    nDrops = Math.clamp( nDrops, 0, 1000 );
+    nDrops = clamp( nDrops, 0, 1000 );
 
     var timeDelta = pt_last.time - pt_first.time;
     for ( var i = 0; i < nDrops; ++i ) {
