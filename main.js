@@ -172,16 +172,11 @@ views.Paint = extend( views.Base, function( stage, w, h, timer, sensitivity ) {
   this.tex_brushPoint = PIXI.Texture.fromImage( "radial-alpha-gradient.png" );
   this.offscreenContainer = new PIXI.DisplayObjectContainer();
 
-  var tex_bg = PIXI.Texture.fromImage( "canvas.png" );
-  this.background = new PIXI.TilingSprite( tex_bg, w, h );
-  // this.background.tileScale = new PIXI.Point( 1.0 / 2.0, 1.0 / 2.0 );
-
   this.tex_in = new PIXI.RenderTexture( w, h );
   this.tex_out = new PIXI.RenderTexture( w, h );
   this.texSprite_in = new PIXI.Sprite( this.tex_in );
   this.texSprite_out = new PIXI.Sprite( this.tex_out );
 
-  stage.addChild( this.background );
   stage.addChild( this.texSprite_out );
   stage.addChild( this.gfx_debug );
   this.offscreenContainer.addChild( this.texSprite_in );
@@ -393,7 +388,7 @@ views.Paint = extend( views.Base, function( stage, w, h, timer, sensitivity ) {
 var init = function( $container ) {
   var w = $container.width(), h = $container.height();
 
-  var stage = new PIXI.Stage( 0xFFFFFF, true /* interactive */ );
+  var stage = new PIXI.Stage( 0xF5F5F5, true /* interactive */ );
   var renderer = PIXI.autoDetectRenderer( w, h, {
     view: $container[0], antialias: true
   } );
